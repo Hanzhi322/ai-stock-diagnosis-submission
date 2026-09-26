@@ -59,7 +59,7 @@ test('对话真实请求路径保留上下文，服务端还原数值和来源',
 test('无依据数值、未知证据、交易指令和链接不能通过校验', () => {
   for (const patch of [ { answer: '股价 999 元' }, { answer: '收入 {{madeUp}}' }, { answer: '{{__proto__}}' },
     { answer: 'E99 显示正常' }, { answer: 'E01 显示正常' }, { answer: '建议买入' }, { answer: 'https://example.com' },
-    { evidenceIds: ['E99'] }, { evidenceIds: [] }, { followups: ['目标价为多少？'] } ]) {
+    { evidenceIds: ['E99'] }, { evidenceIds: [] } ]) {
     assert.equal(parseChatReply({ ...valid, ...patch }), null, JSON.stringify(patch));
   }
 });
@@ -91,7 +91,7 @@ test('格式错误允许修复一次，只显示通过验证的回答', async ()
   configure(); let calls = 0;
   globalThis.fetch = async (_url, options) => {
     calls++;
-    if (calls === 1) return upstream({ ...valid, answer: '经营现金流为 602.17 亿元。' });
+    if (calls === 1) return upstream({ ...valid, answer: '经营现金流为 999.17 亿元。' });
     const body = JSON.parse(options.body);
     assert.match(body.messages.at(-1).content, /格式校验未通过/);
     return upstream(valid);
@@ -105,7 +105,7 @@ test('遵守限流重试并有界停止', async () => {
   assert.equal((await POST(request())).status, 200); assert.equal(calls, 2);
   calls = 0;
   globalThis.fetch = async () => { calls++; return new Response('', { status: 429, headers: { 'retry-after': '0' } }); };
-  assert.equal((await POST(request())).status, 429); assert.equal(calls, 3);
+  assert.equal((await POST(request())).status, 429); assert.equal(calls, 4);
 });
 
 test('推荐的公司介绍可引用业务来源，已知报告日期不再误拦',()=>{

@@ -30,6 +30,8 @@ export function contextFacts(context: ChatContext): Record<string, ChatFact> {
   if (h?.status === "ok") {
     const period = `${dateLabel(h.start)} 至 ${dateLabel(h.end)}，前复权`;
     add("history.period", "行情区间", period, period, historyDocs);
+    add("history.start", "区间起始日期", dateLabel(h.start), period, historyDocs);
+    add("history.end", "区间结束日期", dateLabel(h.end), period, historyDocs);
     add("history.count", "有效交易日线", `${h.count} 根`, period, historyDocs);
     add("history.changePct", "区间涨跌幅", `${h.changePct.toFixed(2)} %`, period, historyDocs);
     add("history.maxDrawdownPct", "收盘价最大回撤", `${h.maxDrawdownPct.toFixed(2)} %`, period, historyDocs);

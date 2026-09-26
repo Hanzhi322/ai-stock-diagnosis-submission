@@ -5,7 +5,7 @@ import { ArrowUp, ArrowUpRight, Check, ChevronRight, LoaderCircle, MessageCircle
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { snapshot, evidence } from "@/lib/research";
 import type { ChatMessage, ChatReply } from "@/lib/stock-chat";
-import { quoteTime, quoteNotice, type MarketResult } from "@/lib/market";
+import { quoteTime, quoteNotice, quoteQueryFields, type MarketResult } from "@/lib/market";
 
 type Turn = { id: number; question: string; reply?: ChatReply; error?: string; pending?: boolean };
 const starters = ["用简单的话介绍一下这家公司", "利润增长，有现金流支撑吗？", "现在还缺哪些关键信息？"];
@@ -39,7 +39,7 @@ export function StockChat({ onOpenEvidence, market, onMarketChange, onOpenMarket
 
   async function send(question: string, retryId?: number) {
     const q = question.trim();
-    if (!q || q.length > 1000 || active.current || Date.now() < cooldownUntil) return;
+    if (!q || q.length > 1000 || active.current || Date.now() < cooldownUntil && !quoteQueryFields(q)) return;
     const prior = retryId ? turns.filter(t => t.id < retryId) : turns;
     // Send only completed pairs, then the current question. Keep a bounded context window.
     const completed = prior.filter(t => t.reply).slice(-5);
@@ -109,10 +109,10 @@ export function StockChat({ onOpenEvidence, market, onMarketChange, onOpenMarket
           <div className="stock-chat-user"><span className="sr-only">你：</span>{turn.question}</div>
           <div className="stock-chat-assistant">
             <span className="stock-chat-sender"><Sparkles size={14} /> 证研</span>
-            {turn.pending && <div className="stock-chat-thinking" role="status"><LoaderCircle className="spin" size={15} />正在查询相关资料，并请模型解释…</div>}
+            {turn.pending && <div className="stock-chat-thinking" role="status"><LoaderCircle className="spin" size={15} />{quoteQueryFields(turn.question) ? "正在查询行情…" : "正在查询相关资料，并请模型解释…"}</div>}
             {turn.error && <div className="stock-chat-error" role="alert"><p>{turn.error}</p>{index === turns.length - 1 && <button disabled={busy || cooldown > 0} onClick={() => void send(turn.question, turn.id)}><RotateCcw size={13} />{cooldown > 0 ? `约 ${cooldown} 秒后可重试` : "重试这个问题"}</button>}</div>}
             {turn.reply && <>
-              <span className={"stock-chat-kind " + turn.reply.kind}>{turn.reply.mode === "boundary" ? "研究边界提示 · 未调用模型" : turn.reply.evidenceIds.some(id => id.startsWith("N")) ? "新闻线索解读 · 需原文核验" : kindLabels[turn.reply.kind]}</span>
+              <span className={"stock-chat-kind " + turn.reply.kind}>{turn.reply.mode === "boundary" ? "研究边界提示 · 未调用模型" : turn.reply.mode === "data" ? "行情查询 · 接口数据" : turn.reply.evidenceIds.some(id => id.startsWith("N")) ? "新闻线索解读 · 需原文核验" : kindLabels[turn.reply.kind]}</span>
               <p className="stock-chat-answer">{turn.reply.answer}</p>
               {turn.reply.evidenceIds.includes("E02") && <p className="stock-chat-boundary">口径提醒：合并经营现金流与归母利润口径不同，比值不能单独证明盈利质量。</p>}
               {turn.reply.evidenceIds.length > 0 && <div className="stock-chat-citations">{turn.reply.evidenceIds.map(id => <button key={id}
@@ -146,9 +146,9 @@ export function StockChat({ onOpenEvidence, market, onMarketChange, onOpenMarket
                 event.preventDefault(); if (!busy) void send(draft);
               }
             }} />
-          <div className="stock-chat-composer-bottom"><span>{cooldown > 0 ? `模型限流 · 约 ${cooldown} 秒后可发送` : draft.length > 800 ? `${draft.length} / 1000` : "可连续追问 · Enter 发送"}</span>
+          <div className="stock-chat-composer-bottom"><span>{cooldown > 0 ? `模型暂缓约 ${cooldown} 秒 · 行情仍可查询` : draft.length > 800 ? `${draft.length} / 1000` : "可连续追问 · Enter 发送"}</span>
             {busy ? <button type="button" className="stock-chat-send stock-chat-stop" aria-label="停止回答" onClick={() => active.current?.abort()}><Square size={14} /></button> :
-              <button type="submit" className="stock-chat-send" aria-label="发送问题" disabled={!draft.trim() || cooldown > 0}><ArrowUp size={18} /></button>}
+            <button type="submit" className="stock-chat-send" aria-label="发送问题" disabled={!draft.trim() || cooldown > 0 && !quoteQueryFields(draft)}><ArrowUp size={18} /></button>}
           </div>
         </form>
         <p className="stock-chat-footnote">AI 解释需结合原文核验 · 不提供买卖建议</p>

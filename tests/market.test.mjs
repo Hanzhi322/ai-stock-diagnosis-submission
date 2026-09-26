@@ -92,7 +92,7 @@ test('端到端将真实接口形状送入模型，并带回可追溯行情', as
     receivedQuote = payload.messages[0].content.includes('quote.lastPrice=125.50 元');
     return Response.json({ choices: [{ message: { content: JSON.stringify({ answer: '截至 {{quote.asOf}}，最新成交价 {{quote.lastPrice}}。', kind: 'evidence', evidenceIds: ['M01'], followups: [] }) } }] });
   };
-  const response = await POST(new Request('http://localhost/api/chat', { method: 'POST', body: JSON.stringify({ messages: [{ role: 'user', content: '股价是多少？' }] }) }));
+  const response = await POST(new Request('http://localhost/api/chat', { method: 'POST', body: JSON.stringify({ messages: [{ role: 'user', content: '股价和经营质量应该如何一起理解？' }] }) }));
   const result = await response.json(); assert.equal(response.status, 200); assert.equal(receivedQuote, true);
   assert.equal(result.mode, 'llm'); assert.equal(result.market.quote.lastPrice, 125.5);
   assert.ok(!JSON.stringify(result).includes('test-fuyao-e2e')); assert.ok(!JSON.stringify(result).includes('test-model-key'));

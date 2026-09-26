@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "recordedAt": "2026-09-26T22:11:34.454754+00:00",
+  "recordedAt": "2026-09-26T23:21:35.228657+00:00",
   "webUrl": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site/",
   "repositoryUrl": "https://github.com/Hanzhi322/ai-stock-diagnosis-submission",
   "local": {
     "automatedTests": {
-      "passed": 59,
+      "passed": 73,
       "failed": 0
     },
     "typecheck": "passed",
@@ -172,7 +172,7 @@
     }
   },
   "note": "记录描述本次实际检查，不保证供应商永久可用。新闻状态 partial 表示已返回媒体片段但含待核验冲突/未核对完整原文，不表示查询失败。",
-  "applicationCommit": "f5b68b71f4f42eef97fc041582784f4f48ab9eaf",
+  "applicationCommit": "0e916b23abbba3d7444507cf935faee10a8434f8",
   "resolvedIssues": [
     {
       "issue": "生产 fetch 请求在 iFinD MCP 初始化阶段超时",
@@ -193,5 +193,201 @@
     "gitHistorySecretMatches": 0,
     "clientBundleSecretMatches": 0,
     "deploymentArchiveSecretMatches": 0
+  },
+  "chatUsabilityFix": {
+    "verifiedAt": "2026-09-26T23:17:29.117Z",
+    "rootCause": "M01 already proves the security ticker; validator incorrectly required C01 as well. Optional followups and exact sourced date/number formatting could also invalidate the full reply.",
+    "localCases": [
+      {
+        "question": "hi在吗",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [],
+        "followups": [
+          "我想了解近期的行业动态。"
+        ]
+      },
+      {
+        "question": "现在股价多少呀",
+        "httpStatus": 200,
+        "mode": "data",
+        "evidenceIds": [
+          "M01"
+        ],
+        "followups": [
+          "解释一下最近的走势",
+          "估值判断还缺哪些资料？"
+        ]
+      },
+      {
+        "question": "用简单的话介绍一下宁德时代",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [
+          "C01"
+        ],
+        "followups": [
+          "我想知道宁德时代的储能业务布局。"
+        ]
+      },
+      {
+        "question": "市盈率是什么意思？",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [],
+        "followups": [
+          "解释一下市盈率的计算方法",
+          "市盈率高低有什么局限？"
+        ]
+      },
+      {
+        "question": "买入是什么意思？",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [],
+        "followups": [
+          "用更简单的话解释一下",
+          "这个判断还有哪些不确定性？"
+        ]
+      },
+      {
+        "question": "利润增长有现金流支撑吗？",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [
+          "E02"
+        ],
+        "followups": [
+          "解释一下利润增长的主要驱动因素",
+          "这个现金流与利润的差异可能有哪些风险"
+        ]
+      },
+      {
+        "question": "股价与利润增长有什么关系？",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [
+          "E02",
+          "M01"
+        ],
+        "followups": [
+          "解释一下最近的走势",
+          "这个判断有什么局限？"
+        ]
+      },
+      {
+        "question": "解释一下最近的走势",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [
+          "C01",
+          "H01",
+          "M01"
+        ],
+        "followups": [
+          "这个跌幅背后可能有哪些因素？",
+          "近期业绩或行业动态有何变化？"
+        ]
+      },
+      {
+        "question": "分析近期新闻的影响",
+        "httpStatus": 200,
+        "mode": "llm",
+        "evidenceIds": [
+          "N01",
+          "N02",
+          "N03",
+          "N04",
+          "N05"
+        ],
+        "followups": [
+          "请问储能业务的毛利率如何？",
+          "动力电池市场份额提升对公司未来有何意义？"
+        ]
+      }
+    ],
+    "localPassed": 9,
+    "sourceFactsMode": "Direct quote queries return data; explanatory responses still use Groq.",
+    "rateLimitHandling": "For Groq GPT-OSS 120B HTTP 429, try GPT-OSS 20B with the same validation; bounded total attempts and timeout.",
+    "onlineVerification": {
+      "verifiedAt": "2026-09-26T23:20:16.529265+00:00",
+      "publicUnauthenticated": true,
+      "passed": 4,
+      "cases": [
+        {
+          "question": "现在股价多少呀",
+          "httpStatus": 200,
+          "seconds": 2.24,
+          "mode": "data",
+          "model": null,
+          "evidenceIds": [
+            "M01"
+          ],
+          "followups": [
+            "解释一下最近的走势",
+            "估值判断还缺哪些资料？"
+          ]
+        },
+        {
+          "question": "利润增长有现金流支撑吗？",
+          "httpStatus": 200,
+          "seconds": 5.85,
+          "mode": "llm",
+          "model": "openai/gpt-oss-120b",
+          "evidenceIds": [
+            "E02"
+          ],
+          "followups": [
+            "利润增长的主要驱动因素是什么？",
+            "现金流下降可能带来哪些风险？"
+          ]
+        },
+        {
+          "question": "解释一下最近的走势",
+          "httpStatus": 200,
+          "seconds": 2.11,
+          "mode": "llm",
+          "model": "openai/gpt-oss-120b",
+          "evidenceIds": [
+            "C01",
+            "H01",
+            "M01"
+          ],
+          "followups": [
+            "这个走势背后可能有哪些因素？",
+            "近期的财务数据有什么变化吗？"
+          ]
+        },
+        {
+          "question": "分析近期新闻的影响",
+          "httpStatus": 200,
+          "seconds": 8.69,
+          "mode": "llm",
+          "model": "openai/gpt-oss-120b",
+          "evidenceIds": [
+            "N01",
+            "N02",
+            "N03",
+            "N04",
+            "N05",
+            "M01"
+          ],
+          "followups": [
+            "解释一下储能业务的具体产品和客户",
+            "这些新闻对公司股价的短期走势可能有哪些限制"
+          ]
+        }
+      ]
+    },
+    "applicationCommit": "0e916b23abbba3d7444507cf935faee10a8434f8",
+    "browser": {
+      "url": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site/",
+      "flow": [
+        "hi在吗",
+        "现在股价多少呀",
+        "click: 解释一下最近的走势"
+      ],
+      "result": "All three replies visible; suggestion becomes the user turn; quote data and subsequent model explanation cite M01/H01."
+    }
   }
 }
