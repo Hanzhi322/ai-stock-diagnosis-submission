@@ -51,9 +51,15 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    // Scan the application entry, not generated verification bundles or cached
+    // third-party documentation in checkout-local working directories.
+    optimizeDeps: { entries: ["app/page.tsx"] },
     server: {
       ...(managedLinux ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] } : {}),
-      ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
+      watch: {
+        ignored: ["**/.sites-runtime/**", "**/dist/**", "**/.wrangler/**"],
+        ...(isCodexSeatbeltSandbox ? {useFsEvents: false, usePolling: true} : {}),
+      },
     },
     plugins: [
       vinext(),

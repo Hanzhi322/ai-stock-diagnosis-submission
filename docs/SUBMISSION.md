@@ -1,23 +1,24 @@
-# 证研 · 最终提交清单
+# 证研 · 提交清单
 
-作品：个股多维诊断与证据验证（宁德时代 300750.SZ）。
+题目：个股多维诊断与证据验证。研究对象：宁德时代（300750.SZ）。
 
-- Web 产品：[https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site](https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site)，公开可访问。
-- 源码仓库：[https://github.com/Hanzhi322/ai-stock-diagnosis-submission](https://github.com/Hanzhi322/ai-stock-diagnosis-submission)，公开，默认分支 main。
-- README：目标用户、核心设计、本地启动、环境变量、数据来源与已知边界。
-- AI 使用与修正记录：`docs/AI_USAGE.md`。
-- 测试说明：`docs/TESTING.md`；实际验证结果：`docs/VERIFICATION.json`。
+## 必交材料
 
-## 验收状态
+1. **Web 产品**：[在线访问证研](https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site/)。公开访问，无需评审提供模型或金融数据密钥。
+2. **源码仓库与 README**：[Hanzhi322/ai-stock-diagnosis-submission](https://github.com/Hanzhi322/ai-stock-diagnosis-submission)。默认分支 main；根目录 README 包含启动、环境变量、产品选择、AI 角色、数据来源、已知边界和未做事项。
+3. **AI 使用与验证记录**：`docs/AI_USAGE.md`。
+4. **测试说明**：`docs/TESTING.md`；本次实际验证摘要见 `docs/VERIFICATION.json`。
 
-本机和线上三个研究问题均验证真实 Groq AI 返回；17 项自动测试、类型检查和正式构建通过。API Key 仅存在本机忽略文件与托管服务秘密变量中。
+## 建议验收路径
 
-## 提交操作
+打开网页 → 点击综合诊断 → 查看 AI 解读和本轮资料状态 → 打开一条财务矛盾证据及一条市场/新闻证据 → 核对原始字段、期间与来源 → 用“问问证研”追问。
 
-在题目提交处填写 Web URL 与 GitHub URL，并上传最新版提交包。候选人亲自演示一个研究问题并点开一条证据核对来源。
+## 附件内容
 
-演示视频为可选项，目前有 `docs/DEMO.md` 的演示脚本，未录制视频。
+提交压缩包包含源代码、README、以上说明和环境变量空示例。包内不含密钥、node_modules、Git 元数据、构建缓存或调试记录。模型、行情与新闻需要服务端权限，缺失或失败时会明确提示。
 
-## 已知边界
+演示视频为可选项，未将视频列为已交付。`docs/DEMO.md` 提供演示顺序。
 
-只覆盖宁德时代公开财报快照；实时行情、同行估值和最新事件尚未接入并显示未知。模型受服务商额度限制，异常时明确降级。无需再新增功能即可进行本次提交审阅。
+## 当前验收边界
+
+真实 Groq 诊断与聊天、扶摇价格/日线/估值及 iFinD 新闻已在线上验证。接口仍受服务商授权、额度与网络影响；失败时页面明确显示缺口，详见测试说明与验证记录。

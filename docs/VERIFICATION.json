@@ -1,134 +1,197 @@
 {
+  "schemaVersion": 2,
+  "recordedAt": "2026-09-26T22:11:34.454754+00:00",
+  "webUrl": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site/",
+  "repositoryUrl": "https://github.com/Hanzhi322/ai-stock-diagnosis-submission",
   "local": {
-    "testedAt": "2026-09-26T18:16:31.789Z",
-    "url": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site",
-    "tests": [
-      {
-        "target": "local",
-        "question": "利润增长是否有现金流支撑？请解释矛盾证据。",
-        "status": 200,
-        "providerStatus": 200,
-        "mode": "llm",
-        "model": "qwen/qwen3.8-27b",
-        "ids": [
-          "E01",
-          "E02",
-          "E05",
-          "E03"
-        ],
-        "notice": "AI 解读已通过结构与证据编号校验；数值由确定性引擎提供，解释仍需人工核验。",
-        "durationMs": 561
-      },
-      {
-        "target": "local",
-        "question": "当前估值是否合理，还缺少什么证据？",
-        "status": 200,
-        "providerStatus": 200,
-        "mode": "llm",
-        "model": "qwen/qwen3.8-27b",
-        "ids": [
-          "E04",
-          "E03"
-        ],
-        "notice": "AI 解读已通过结构与证据编号校验；数值由确定性引擎提供，解释仍需人工核验。",
-        "durationMs": 409
-      },
-      {
-        "target": "local",
-        "question": "储能业务的增长与毛利率变化是否一致？",
-        "status": 200,
-        "providerStatus": 200,
-        "mode": "llm",
-        "model": "qwen/qwen3.8-27b",
-        "ids": [
-          "E01",
-          "E03"
-        ],
-        "notice": "AI 解读已通过结构与证据编号校验；数值由确定性引擎提供，解释仍需人工核验。",
-        "durationMs": 491
+    "automatedTests": {
+      "passed": 59,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "realGroqDiagnosis": "passed",
+    "realGroqChat": "passed",
+    "fuyaoQuoteHistoryValuation": "passed",
+    "ifindNews": "passed",
+    "model": "openai/gpt-oss-120b",
+    "currentModelNewsPromptValidation": "passed",
+    "previewStatus": "HTTP 200; model configured as openai/gpt-oss-120b",
+    "finalSmokeTest": {
+      "verifiedAt": "2026-09-26T22:12:28.557677+00:00",
+      "checks": {
+        "news": {
+          "httpStatus": 200,
+          "mode": null,
+          "status": "ok",
+          "articles": 5,
+          "evidenceIds": null,
+          "error": null
+        },
+        "chat": {
+          "httpStatus": 200,
+          "mode": "llm",
+          "status": null,
+          "articles": 0,
+          "evidenceIds": [
+            "C01"
+          ],
+          "error": null
+        }
       }
-    ]
+    }
   },
   "online": {
-    "testedAt": "2026-09-26T18:18:43.951Z",
-    "url": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site",
-    "tests": [
-      {
-        "target": "online",
-        "question": "利润增长是否有现金流支撑？请解释矛盾证据。",
-        "status": 200,
-        "mode": "llm",
-        "model": "qwen/qwen3.8-27b",
-        "ids": [
-          "E01",
-          "E02",
-          "E05",
-          "E03"
-        ],
-        "notice": "AI 解读已通过结构与证据编号校验；数值由确定性引擎提供，解释仍需人工核验。",
-        "durationMs": 1559
-      },
-      {
-        "target": "online",
-        "question": "当前估值是否合理，还缺少什么证据？",
-        "status": 200,
-        "mode": "llm",
-        "model": "qwen/qwen3.8-27b",
-        "ids": [
-          "E04",
-          "E03"
-        ],
-        "notice": "AI 解读已通过结构与证据编号校验；数值由确定性引擎提供，解释仍需人工核验。",
-        "durationMs": 424
-      },
-      {
-        "target": "online",
-        "question": "储能业务的增长与毛利率变化是否一致？",
-        "status": 200,
-        "mode": "llm",
-        "model": "qwen/qwen3.8-27b",
-        "ids": [
-          "E01",
-          "E03"
-        ],
-        "notice": "AI 解读已通过结构与证据编号校验；数值由确定性引擎提供，解释仍需人工核验。",
-        "durationMs": 577
-      }
-    ]
-  },
-  "automaticTests": {
-    "passed": 17,
-    "failed": 0
-  },
-  "typecheck": "passed",
-  "build": "passed",
-  "security": {
-    "envLocalIgnored": true,
-    "envLocalInHistory": false,
-    "findings": []
-  },
-  "runtimeSourceSha256": "48639f1f91567ea34d2a1e533c1ad27453b59adba6d55f879ceb9b1b3960ffeb",
-  "runtimeFilesIdenticalToVerifiedDeployment": true,
-  "runtimeDigestAlgorithm": "SHA-256 of sorted tracked runtime paths and contents, each separated by NUL; excludes README.md and docs/.",
-  "visualRelease": {
-    "verifiedAt": "2026-09-26T18:52:04.385750+00:00",
-    "theme": "blue-violet-gradient",
-    "changeScope": [
-      "app/globals.css",
-      "public/favicon.svg"
-    ],
-    "build": "passed",
-    "desktopAndMobilePreview": "passed",
-    "onlineDiagnosis": {
+    "status": "passed",
+    "publicAccess": {
+      "authenticated": false,
+      "httpStatus": 200,
+      "client": "curl"
+    },
+    "runtime": {
+      "modelConfigured": true,
+      "model": "openai/gpt-oss-120b",
+      "chatPreview": true,
+      "dataMode": "verified-public-snapshot",
+      "snapshot": "catl-2026h1-v1"
+    },
+    "diagnosis": {
+      "verifiedAt": "2026-09-26T21:58:38.162411+00:00",
+      "httpStatus": 200,
       "mode": "llm",
-      "question": "利润增长是否有现金流支撑？请解释矛盾证据。",
+      "model": "openai/gpt-oss-120b",
       "evidenceIds": [
+        "X01",
         "E01",
         "E02",
+        "E03",
+        "E04",
+        "M01",
+        "H01",
+        "V01",
+        "N01",
+        "N02",
+        "N05",
         "E05",
-        "E03"
+        "E06",
+        "N03",
+        "N04"
+      ],
+      "dataStatus": [
+        {
+          "id": "financial",
+          "label": "财报",
+          "status": "ok",
+          "timing": "2026-01-01 至 2026-06-30",
+          "detail": "披露 2026-07-24 · 半年报快照，非当前财务数据"
+        },
+        {
+          "id": "market",
+          "label": "价格快照",
+          "status": "ok",
+          "timing": "2026/09/27 05:58:34",
+          "detail": "展示接口返回的行情快照，可能存在延迟，不代表逐笔实时推送。 数据就绪时点不等于成交时间。"
+        },
+        {
+          "id": "history",
+          "label": "历史走势",
+          "status": "ok",
+          "timing": "2026-07-03 至 2026-09-24",
+          "detail": "60 根前复权日线 · 不是当日实时走势"
+        },
+        {
+          "id": "valuation",
+          "label": "估值",
+          "status": "ok",
+          "timing": "2026/09/27 05:58:34",
+          "detail": "5 项有效指标 · 同行与历史分位未接入"
+        },
+        {
+          "id": "news",
+          "label": "新闻与事件",
+          "status": "partial",
+          "timing": "2026-09-21 至 2026-09-27",
+          "detail": "5 条媒体片段 · 含待核验冲突 · 未核对完整原文，事件不保证完整覆盖"
+        }
       ]
     },
-    "publicUrl": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site"
+    "chat": {
+      "verifiedAt": "2026-09-26T22:10:22.287933+00:00",
+      "httpStatus": 200,
+      "mode": "llm",
+      "model": "openai/gpt-oss-120b",
+      "question": "结合刚检索到的宁德时代新闻，分别说明报道内容、可能影响和还需要验证的证据。不要给交易建议。",
+      "evidenceIds": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05"
+      ],
+      "sourceCount": 5
+    },
+    "ifindNews": {
+      "verifiedAt": "2026-09-26T21:50:17.996363+00:00",
+      "httpStatus": 200,
+      "status": "ok",
+      "articleCount": 5,
+      "tool": "search_news",
+      "transport": "direct-tls",
+      "seconds": 7.76,
+      "retrievalFrom": "2026-09-21",
+      "retrievalTo": "2026-09-27",
+      "fetchedAt": 1790459417940,
+      "sourceUrls": [
+        "https://stock.stockstar.com/RB2026092500004638.shtml",
+        "https://wap.stockstar.com/detail/RB2026092400028172",
+        "https://www.sohu.com/a/1080020662_122014422",
+        "http://news.10jqka.com.cn/19700122/c680184099.shtml",
+        "https://stock.jrj.com.cn/2026/09/22074158502855.shtml"
+      ]
+    },
+    "boundaryChecks": {
+      "emptyQuestion": {
+        "httpStatus": 400,
+        "mode": null,
+        "error": "请输入 1—500 字的研究问题。"
+      },
+      "tradingBoundary": {
+        "httpStatus": 200,
+        "mode": "boundary",
+        "error": null
+      }
+    },
+    "browser": {
+      "tabOrder": "诊断概览 → 行情与新闻 → 证据清单 → 数据与方法",
+      "navigationAndDiagnosisScroll": "passed",
+      "historyChart": "rendered",
+      "valuation": "rendered",
+      "newsArticlesVisible": 5,
+      "earlierRateLimitObserved": true,
+      "earlierRateLimitHandling": "明确显示规则降级或重试；修复后的成功调用单独记录。"
+    }
+  },
+  "note": "记录描述本次实际检查，不保证供应商永久可用。新闻状态 partial 表示已返回媒体片段但含待核验冲突/未核对完整原文，不表示查询失败。",
+  "applicationCommit": "f5b68b71f4f42eef97fc041582784f4f48ab9eaf",
+  "resolvedIssues": [
+    {
+      "issue": "生产 fetch 请求在 iFinD MCP 初始化阶段超时",
+      "fix": "对同一官方端点使用验证证书的服务端 TLS 连接，生产实际取回新闻。"
+    },
+    {
+      "issue": "Qwen 模型每日 token 额度接近耗尽",
+      "fix": "配置同一 Groq 账户下验证可用的 GPT-OSS 120B，适配推理参数和输出上限。"
+    },
+    {
+      "issue": "新闻点评上下文重复携带大量非必要数字",
+      "fix": "定性问题保留新闻和来源，裁剪无关数字表；数字问题仍提供相应字段。"
+    }
+  ],
+  "security": {
+    "envLocalIgnored": true,
+    "trackedSecretsFound": false,
+    "gitHistorySecretMatches": 0,
+    "clientBundleSecretMatches": 0,
+    "deploymentArchiveSecretMatches": 0
   }
 }
