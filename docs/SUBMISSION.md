@@ -6,8 +6,14 @@
 
 1. **Web 产品**：[在线访问证研](https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site/)。公开访问，无需评审提供模型或金融数据密钥。
 2. **源码仓库与 README**：[Hanzhi322/ai-stock-diagnosis-submission](https://github.com/Hanzhi322/ai-stock-diagnosis-submission)。默认分支 main；根目录 README 包含启动、环境变量、产品选择、AI 角色、数据来源、已知边界和未做事项。
-3. **AI 使用与验证记录**：`docs/AI_USAGE.md`。
-4. **测试说明**：`docs/TESTING.md`；本次实际验证摘要见 `docs/VERIFICATION.json`。
+3. **AI 使用与验证记录**：[AI_USAGE.md](AI_USAGE.md)。包含工具分工、实际体验反馈、修正的问题与输出验证方式。
+4. **测试说明**：[TESTING.md](TESTING.md)；本次实际验证摘要见 [VERIFICATION.json](VERIFICATION.json)。覆盖主链路、数据缺失、接口失败及极端与合规边界。
+
+## 评审运行须知
+
+本项目受原型预算与 Groq 账户额度限制，连续快速提问或多人同时使用可能触发限流。建议一次提问后等待结果，限流时按页面提示稍后重试；模型调用、直接行情查询与规则降级有明确区分。具体操作见 [README 评审使用指南](../README.md#评审使用指南)。
+
+网页访问受当地网络环境影响；无法打开时可尝试切换网络，必要时使用所在地及机构规则允许的 VPN 或代理。VPN 不是必需配置，也不能修复服务端额度或权限问题。行情、新闻和模型各自的失败提示与兜底方式均在指南中列明。
 
 ## 建议验收路径
 
@@ -17,7 +23,7 @@
 
 提交压缩包包含源代码、README、以上说明和环境变量空示例。包内不含密钥、node_modules、Git 元数据、构建缓存或调试记录。模型、行情与新闻需要服务端权限，缺失或失败时会明确提示。
 
-演示视频为可选项，未将视频列为已交付。`docs/DEMO.md` 提供演示顺序。
+演示视频为可选项，未将视频列为已交付。[DEMO.md](DEMO.md) 提供演示顺序。
 
 ## 当前验收边界
 
