@@ -107,6 +107,28 @@
     "envLocalInHistory": false,
     "findings": []
   },
-  "runtimeSourceSha256": "e0e3aa012e2c58d48b43fb7a7c56f6bf77b353d15d4996abf76522b15ac24f33",
-  "runtimeFilesIdenticalToVerifiedDeployment": true
+  "runtimeSourceSha256": "48639f1f91567ea34d2a1e533c1ad27453b59adba6d55f879ceb9b1b3960ffeb",
+  "runtimeFilesIdenticalToVerifiedDeployment": true,
+  "runtimeDigestAlgorithm": "SHA-256 of sorted tracked runtime paths and contents, each separated by NUL; excludes README.md and docs/.",
+  "visualRelease": {
+    "verifiedAt": "2026-09-26T18:52:04.385750+00:00",
+    "theme": "blue-violet-gradient",
+    "changeScope": [
+      "app/globals.css",
+      "public/favicon.svg"
+    ],
+    "build": "passed",
+    "desktopAndMobilePreview": "passed",
+    "onlineDiagnosis": {
+      "mode": "llm",
+      "question": "利润增长是否有现金流支撑？请解释矛盾证据。",
+      "evidenceIds": [
+        "E01",
+        "E02",
+        "E05",
+        "E03"
+      ]
+    },
+    "publicUrl": "https://zhengyan-evidence-workbench.zuhanzhizzz.chatgpt.site"
+  }
 }
