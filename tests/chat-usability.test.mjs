@@ -66,7 +66,7 @@ test('概念问题不携带整份财报，现金流问题仍保留对应指标�
  const concept=buildChatPrompt(market,{},'市盈率是什么意思？');
  assert.doesNotMatch(concept,/cashflow=|revenue=|dividend=/);
  const financial=buildChatPrompt(market,{},'利润增长有现金流支撑吗？');
- assert.match(financial,/cashflow=602.17 亿元/);assert.match(financial,/口径不同/);assert.doesNotMatch(financial,/dividend=/);
+ assert.match(financial,/"key":"cashflow","value":"602.17 亿元"/);assert.match(financial,/口径不同/);assert.doesNotMatch(financial,/dividend=/);
 });
 test('主模型限流切换同服务商备用模型，修复机会不被限流次数吃掉',async()=>{
  process.env.ENABLE_CHAT_PREVIEW='true';process.env.LLM_API_KEY='test-fallback';process.env.LLM_BASE_URL='https://api.groq.com/openai/v1';process.env.LLM_MODEL='openai/gpt-oss-120b';delete process.env.FUYAO_API_KEY;

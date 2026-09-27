@@ -2,8 +2,9 @@ import { dateLabel, historyDocs, valuationDocs, type HistoryResult, type Valuati
 import { quoteTime } from "./market";
 import type { NewsResult } from "./news";
 import type { ChatFact } from "./stock-chat";
-export type ChatContext = { history?: HistoryResult; valuation?: ValuationResult; news?: NewsResult };
-export type ChatSource = { id: string; title: string; url: string; text: string; timing?: string };
+import type { ResearchResult } from "./ifind-research";
+export type ChatContext = { history?: HistoryResult; valuation?: ValuationResult; news?: NewsResult; research?: ResearchResult };
+export type ChatSource = { id: string; title: string; url: string; text: string; timing?: string; linkLabel?: string; warnings?: string[] };
 export const companySource: ChatSource = {
   id: "C01", title: "公司业务简介 · 宁德时代官网", url: "https://www.catl.com/",
   text: "宁德时代新能源科技股份有限公司（CATL），研究对象为深交所 A 股 300750.SZ。公司主要从事动力电池与储能电池相关业务。动力电池为电动汽车等提供动力；储能系统用于电力系统等场景。公司官网介绍其电动出行与储能解决方案。业务介绍不能推导股票是否值得购买。",
@@ -19,6 +20,7 @@ export function contextSources(context: ChatContext): ChatSource[] {
     timing: quoteTime(context.valuation.sourceTimestamp) });
   if (context.news?.status === "ok") for (const a of context.news.articles) sources.push({ id: a.id, title: a.title, url: a.url || "https://mcp.51ifind.com/",
     text: "核验提示：" + a.warnings.join(" ") + "\n新闻片段：" + a.excerpt, timing: `报道发表 ${a.publishedAt}；来源 ${a.source}；获取 ${quoteTime(context.news.fetchedAt)}（北京时间）` });
+  if(context.research) sources.push(...context.research.sources.filter(s=>!sources.some(existing=>existing.id===s.id)));
   return sources;
 }
 export function contextFacts(context: ChatContext): Record<string, ChatFact> {
@@ -59,6 +61,7 @@ export function contextFacts(context: ChatContext): Record<string, ChatFact> {
       if (count >= 12) break;
     }
   }
+  if(context.research)Object.assign(facts,context.research.facts);
   return facts;
 }
 export function neededResearch(question: string) {

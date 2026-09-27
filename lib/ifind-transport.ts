@@ -2,7 +2,7 @@ import { connect } from "node:tls";
 
 const host = "api-mcp.51ifind.com";
 const port = 8643;
-const path = "/ds-mcp-servers/hexin-ifind-ds-news-mcp";
+const paths = { news: "/ds-mcp-servers/hexin-ifind-ds-news-mcp", finance: "/ds-mcp-servers/hexin-ifind-ds-mcp" } as const;
 const limit = 300000;
 type Decoded = { status: number; headers: Headers; body: Uint8Array };
 
@@ -66,8 +66,10 @@ export function decodeIfindHttp(raw: Buffer, ended = false, rpcId?: number): Dec
   return { status, headers, body };
 }
 
-export async function postIfindMcp(headers: Record<string, string>, body: string, signal: AbortSignal): Promise<Response> {
+export async function postIfindMcp(headers: Record<string, string>, body: string, signal: AbortSignal, service: keyof typeof paths = "news"): Promise<Response> {
   signal.throwIfAborted();
+  if (!Object.hasOwn(paths, service)) throw Error("IFIND_INVALID_SERVICE");
+  const path = paths[service];
   const pairs = Object.entries(headers);
   if (pairs.some(([name, value]) => !/^[a-z-]+$/i.test(name) || /[\r\n]/.test(value))) throw Error("IFIND_INVALID_REQUEST_HEADER");
   const rpcId = JSON.parse(body).id;

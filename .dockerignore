@@ -1,0 +1,27 @@
+# Only application source and build inputs enter the cloud build context.
+**
+!Dockerfile
+!.dockerignore
+!package.json
+!package-lock.json
+!next.config.ts
+!tsconfig.json
+!postcss.config.mjs
+!app/
+!app/**
+!components/
+!components/**
+!hooks/
+!hooks/**
+!lib/
+!lib/**
+!public/
+!public/**
+!scripts/
+!scripts/build-cloudbase.mjs
+# Explicit exclusions remain last even if the application allowlist changes.
+**/.env*
+**/*.pem
+**/*.key
+**/node_modules
+**/.git

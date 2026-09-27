@@ -93,7 +93,8 @@ test('格式错误允许修复一次，只显示通过验证的回答', async ()
     calls++;
     if (calls === 1) return upstream({ ...valid, answer: '经营现金流为 999.17 亿元。' });
     const body = JSON.parse(options.body);
-    assert.match(body.messages.at(-1).content, /格式校验未通过/);
+    assert.match(body.messages.at(-1).content, /999.17 亿元/);
+    assert.match(body.messages.at(-1).content, /指标、单位及来源/);
     return upstream(valid);
   };
   const response = await POST(request()); assert.equal(response.status, 200);

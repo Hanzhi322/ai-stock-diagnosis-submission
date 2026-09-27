@@ -9,7 +9,7 @@ import { quoteTime, quoteNotice, quoteQueryFields, type MarketResult } from "@/l
 
 type Turn = { id: number; question: string; reply?: ChatReply; error?: string; pending?: boolean };
 const starters = ["用简单的话介绍一下这家公司", "利润增长，有现金流支撑吗？", "现在还缺哪些关键信息？"];
-const kindLabels = { evidence: "基于数据证据", concept: "一般概念解释", unknown: "资料尚不充分" };
+const kindLabels = { evidence: "基于数据证据", concept: "一般概念解释", unknown: "仍待确认的判断" };
 
 export function StockChat({ onOpenEvidence, market, onMarketChange, onOpenMarket, researchQuestion }: {
   onOpenEvidence: (id: string) => unknown; market: MarketResult | null;
@@ -112,8 +112,9 @@ export function StockChat({ onOpenEvidence, market, onMarketChange, onOpenMarket
             {turn.pending && <div className="stock-chat-thinking" role="status"><LoaderCircle className="spin" size={15} />{quoteQueryFields(turn.question) ? "正在查询行情…" : "正在查询相关资料，并请模型解释…"}</div>}
             {turn.error && <div className="stock-chat-error" role="alert"><p>{turn.error}</p>{index === turns.length - 1 && <button disabled={busy || cooldown > 0} onClick={() => void send(turn.question, turn.id)}><RotateCcw size={13} />{cooldown > 0 ? `约 ${cooldown} 秒后可重试` : "重试这个问题"}</button>}</div>}
             {turn.reply && <>
-              <span className={"stock-chat-kind " + turn.reply.kind}>{turn.reply.mode === "boundary" ? "研究边界提示 · 未调用模型" : turn.reply.mode === "data" ? "行情查询 · 接口数据" : turn.reply.evidenceIds.some(id => id.startsWith("N")) ? "新闻线索解读 · 需原文核验" : kindLabels[turn.reply.kind]}</span>
+              <span className={"stock-chat-kind " + turn.reply.kind}>{turn.reply.mode === "boundary" ? "研究边界提示 · 未调用模型" : turn.reply.mode === "data" ? turn.reply.evidenceIds.every(id=>id==="M01") ? "行情查询 · 接口数据" : "已取得资料整理" : turn.reply.evidenceIds.some(id => id.startsWith("N")) ? "新闻线索解读 · 需原文核验" : kindLabels[turn.reply.kind]}</span>
               <p className="stock-chat-answer">{turn.reply.answer}</p>
+              {turn.reply.notice && <p className="stock-chat-boundary">{turn.reply.notice}</p>}
               {turn.reply.evidenceIds.includes("E02") && <p className="stock-chat-boundary">口径提醒：合并经营现金流与归母利润口径不同，比值不能单独证明盈利质量。</p>}
               {turn.reply.evidenceIds.length > 0 && <div className="stock-chat-citations">{turn.reply.evidenceIds.map(id => <button key={id}
                 title={id === "M01" ? "查看本次引用的行情与时点" : turn.reply?.sources?.find(s => s.id === id)?.title || evidence.find(e => e.id === id)?.title} onClick={() => {
@@ -123,7 +124,7 @@ export function StockChat({ onOpenEvidence, market, onMarketChange, onOpenMarket
                 }}>
                 {id === "M01" ? "M01 行情" : id}<ArrowUpRight size={12} /></button>)}<span>点击复核证据</span></div>}
               {turn.reply.sources?.filter(source => sourceOpen === `${turn.id}-${source.id}`).map(source => <section className="stock-chat-source" key={source.id}>
-                <strong>{source.id} · {source.title}</strong><span>{source.timing}</span><p>{source.text}</p><a href={source.url} target="_blank" rel="noreferrer">打开来源 ↗</a>
+                <strong>{source.id} · {source.title}</strong><span>{source.timing}</span><p>{source.text}</p>{source.warnings?.length ? <p className="stock-chat-boundary">{source.warnings.join(" ")}</p> : null}<a href={source.url} target="_blank" rel="noreferrer">{source.linkLabel || "打开来源"} ↗</a>
               </section>)}
               {turn.reply.context && Object.entries(turn.reply.context).filter(([,result]) => result.status === "unavailable").map(([name,result]) => <p className="stock-chat-boundary" key={name}>{result.status === "unavailable" ? result.message : ""}</p>)}
               {turn.reply.evidenceIds.includes("M01") && turn.reply.market?.status === "ok" && <p className="stock-chat-boundary">

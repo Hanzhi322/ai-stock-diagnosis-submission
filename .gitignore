@@ -46,3 +46,7 @@ next-env.d.ts
 /work/
 !.env.example
 *.tsbuildinfo
+
+# CloudBase local credentials and CLI state.
+/.cloudbase/
+/.tcb/
