@@ -17,6 +17,8 @@
 !lib/**
 !public/
 !public/**
+!vendor/
+!vendor/**
 !scripts/
 !scripts/build-cloudbase.mjs
 # Explicit exclusions remain last even if the application allowlist changes.
