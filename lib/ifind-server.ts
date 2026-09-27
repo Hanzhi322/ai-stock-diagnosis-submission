@@ -1,5 +1,6 @@
 import type { NewsArticle, NewsResult } from "./news";
 import { dateLabel } from "./market-analysis";
+import { logUpstreamFailure, readUpstreamError } from "./upstream-failure";
 
 const endpoint = "https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-news-mcp";
 const unavailable = (code: string, message: string): NewsResult => ({ status: "unavailable", code, message });
@@ -81,9 +82,13 @@ async function queryNews(key: string): Promise<NewsResult> {
     phase = `${method}:request`;
     const id = ++sequence;
     const r = await send(JSON.stringify({ jsonrpc: "2.0", id, method, params }));
-    if (r.status === 401 || r.status === 403) { await r.body?.cancel(); throw new NewsError("AUTH_REQUIRED", "iFinD 新闻授权未通过，请检查个人令牌及新闻服务权限。"); }
-    if (r.status === 429) { await r.body?.cancel(); throw new NewsError("RATE_LIMIT", "iFinD 新闻服务限流，请稍后重试。"); }
-    if (!r.ok) { await r.body?.cancel(); throw new NewsError("UPSTREAM_ERROR", "iFinD 新闻服务暂时不可用。"); }
+    if (!r.ok) {
+      logUpstreamFailure("ifind-news",method,r.status,await readUpstreamError(r));
+      if (r.status === 401) throw new NewsError("AUTH_REQUIRED", "iFinD 新闻认证失败，请检查服务端令牌配置。");
+      if (r.status === 403) throw new NewsError("FORBIDDEN", "iFinD 新闻服务拒绝了此次访问，需要检查服务权限或服务器网络限制。");
+      if (r.status === 429) throw new NewsError("RATE_LIMIT", "iFinD 新闻服务限流，请稍后重试。");
+      throw new NewsError(`UPSTREAM_${r.status}`, "iFinD 新闻服务暂时不可用。");
+    }
     session = r.headers.get("mcp-session-id") || session;
     phase = `${method}:response`;
     const rpc = await readMcpResponse(r, id);

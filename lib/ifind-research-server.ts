@@ -1,4 +1,5 @@
 import { readMcpResponse } from "./ifind-server";
+import { logUpstreamFailure, readUpstreamError } from "./upstream-failure";
 import { parseResearchTool, planResearch, researchLookup, researchTools, type ResearchLookup, type ResearchResult, type ResearchTool } from "./ifind-research";
 
 const endpoint="https://api-mcp.51ifind.com:8643/ds-mcp-servers/hexin-ifind-ds-mcp";
@@ -14,7 +15,10 @@ async function query(lookups:ResearchLookup[],key:string,signal:AbortSignal):Pro
     fetch(endpoint,{method:"POST",headers:headers(),body,signal,redirect:"manual"});
   const rpc=async(method:string,params:unknown)=>{
     const id=++sequence,r=await send(JSON.stringify({jsonrpc:"2.0",id,method,params}));
-    if(!r.ok){await r.body?.cancel();throw Error(r.status===429?"RATE_LIMIT":r.status===401||r.status===403?"AUTH_REQUIRED":"UPSTREAM_ERROR");}
+    if(!r.ok){
+      logUpstreamFailure("ifind-research",method,r.status,await readUpstreamError(r));
+      throw Error(r.status===429?"RATE_LIMIT":r.status===401?"AUTH_REQUIRED":r.status===403?"FORBIDDEN":`UPSTREAM_${r.status}`);
+    }
     session=r.headers.get("mcp-session-id")||session;
     const body=await readMcpResponse(r,id);
     if(body.error)throw Error("MCP_ERROR");

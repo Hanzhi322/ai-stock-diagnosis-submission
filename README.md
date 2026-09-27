@@ -1,4 +1,4 @@
-> **腾讯云独立部署分支**：此分支保留原产品功能并添加 CloudBase 云托管部署配置。原 `chatgpt.site` 地址与仓库 `main` 继续保留。腾讯云新地址尚未发布；配置步骤见 [腾讯云部署指南](docs/CLOUDBASE_DEPLOY.md)。
+> **腾讯云独立部署分支**：原 `chatgpt.site` 地址与仓库 `main` 继续保留。[腾讯云测试入口](https://hanzhi-stockresearch-320203-5-1369223532.sh.run.tcloudbase.com/)已启动，页面与行情可用；模型调用和新闻访问仍在排查，尚未完成全部验收。配置与实测状态见 [腾讯云部署指南](docs/CLOUDBASE_DEPLOY.md)。
 
 # 证研 · 个股证据工作台
 

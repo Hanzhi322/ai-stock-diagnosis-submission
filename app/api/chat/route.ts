@@ -6,6 +6,7 @@ import { neededResearch, type ChatContext } from "@/lib/chat-context";
 import { getIfindResearch, mergeResearch } from "@/lib/ifind-research-server";
 import { isSimpleChat, researchTools, type ResearchTool } from "@/lib/ifind-research";
 import { evidenceFallback, inspectChatAnswer } from "@/lib/chat-answer";
+import { logUpstreamFailure, modelFailureMessage, readUpstreamError } from "@/lib/upstream-failure";
 
 const headers = { "Cache-Control": "no-store" };
 function error(message: string, code: string, status: number, retryAfterSeconds?: number) {
@@ -87,10 +88,13 @@ export async function POST(request: Request) {
       if (!response.ok) {
         // Groq can return useful text with a serialization error. It goes
         // through the same paragraph inspection/repair as a 200 response.
-        const failure=await response.json().catch(()=>null) as {error?:{code?:string;failed_generation?:string}}|null;
+        const failure=await readUpstreamError(response) as {error?:{code?:string;failed_generation?:string}}|null;
         if(response.status===400&&failure?.error?.code==="json_validate_failed"&&typeof failure.error.failed_generation==="string"){
           data={choices:[{message:{content:failure.error.failed_generation}}]};
-        }else return error("模型暂时不可用，请重试。未生成新的回答。", "UPSTREAM_ERROR", 502);
+        }else {
+          const detail=logUpstreamFailure("model","chat/completions",response.status,failure);
+          return error(modelFailureMessage(detail), `UPSTREAM_${response.status}`, 502);
+        }
       }else data = await response.json();
       let parsed: unknown;
       try { parsed = JSON.parse((data.choices?.[0]?.message?.content || "null").replace(/^\s*```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "")); } catch { parsed = null; }
