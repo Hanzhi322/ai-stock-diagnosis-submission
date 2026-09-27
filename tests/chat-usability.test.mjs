@@ -36,6 +36,30 @@ test('sug统一用户口吻，并保留问题主题',()=>{
  assert.deepEqual(userFollowups(['这个判断有什么局限？','解释一下最近的走势'],[]),['这个判断有什么局限？','解释一下最近的走势']);
  assert.deepEqual(userFollowups(['想了解近期的行业动态吗','想知道宁德时代的主要客户有哪些吗'],[]),['我想了解近期的行业动态。','我想知道宁德时代的主要客户有哪些。']);
 });
+test('小模型输出的研究建议不能作为用户下一轮发言',()=>{
+ assert.deepEqual(userFollowups(['后续可关注相关业务布局进展及市场相关表现的信息'],['C01']),['用更简单的话解释一下','这个判断还有哪些不确定性？']);
+ assert.deepEqual(userFollowups(['这些业务的下游应用市场情况大概如何'],['C01']),['这些业务的下游应用市场情况大概如何']);
+});
+test('信息缺口提示使用本轮查询状态，不沿用财报快照的行情缺失文案',()=>{
+ const prompt=buildChatPrompt(market,{history:{status:'unavailable'},valuation:{status:'unavailable'}},'现在还缺哪些关键信息？');
+ assert.match(prompt,/本轮已取得独立行情快照/);
+ assert.match(prompt,/本轮历史日线暂未取得/);
+ assert.doesNotMatch(prompt,/财报快照不包含同日市场定价/);
+ assert.match(prompt,/不再申请lookup/);
+});
+test('讯飞简洁提示保留证据边界，介绍公司不混入行情或变量模板',()=>{
+ const intro=buildChatPrompt(market,{},'用简单的话介绍一下这家公司',true);
+ assert.match(intro,/C01/);assert.match(intro,/动力电池/);
+ assert.doesNotMatch(intro,/quote\.|125\.50|\{\{key\}\}/);
+ const cash=buildChatPrompt(market,{},'利润增长有没有现金流支撑？',true);
+ assert.match(cash,/现金流绝对额仍高于归母净利润/);
+ assert.match(cash,/增速落后/);assert.match(cash,/口径差异/);
+ const coverage=buildChatPrompt(market,{},'现在还缺哪些关键信息？',true);
+ assert.match(coverage,/行情快照已取得/);assert.match(coverage,/增长持续性/);
+ const history={status:'ok',bars:[{date:1,close:150},{date:2,close:120}],start:1,end:2,count:2,changePct:-20,maxDrawdownPct:-20};
+ const movement=buildChatPrompt(market,{history},'最近走势的涨跌幅是多少？',true);
+ assert.match(movement,/H01 区间涨跌幅：-20\.00 %/);assert.match(movement,/M01 独立行情快照/);assert.match(movement,/首尾价格走弱、下降/);
+});
 test('普通概念及拒绝语句可以提及交易词，交易指令仍被拒绝',()=>{
  for(const answer of ['买入是指购买股票的交易行为，这是术语解释。','“买入”是指购买股票。它是一种交易行为，涉及出价、成交以及后续持有或卖出的决策。','我不能提供买入或卖出建议，但可以解释经营风险。'])assert.ok(parseChatReply({answer,kind:'concept',evidenceIds:[],followups:[]}));
  for(const answer of ['建议买入。','立即加仓。','卖出。','我不能保证收益。建议买入。'])assert.equal(parseChatReply({answer,kind:'concept',evidenceIds:[],followups:[]}),null);

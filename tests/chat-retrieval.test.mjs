@@ -13,6 +13,10 @@ const saved=Object.fromEntries(envNames.map(k=>[k,process.env[k]]));
 afterEach(()=>{globalThis.fetch=savedFetch;for(const k of envNames){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k];}});
 const unavailable={status:'unavailable',code:'TIMEOUT',message:'本次查询暂未完成。'};
 const answer=(text,ids=['E02'],kind='evidence')=>({answer:text,kind,evidenceIds:ids,followups:[]});
+test('内部修正措辞不进入用户正文，有依据的后文继续展示',()=>{
+ const r=inspectChatAnswer(answer('无可用回答正文。经营现金流绝对额仍高于归母净利润。')).reply;
+ assert.ok(r);assert.equal(r.answer,'经营现金流绝对额仍高于归母净利润。');assert.equal(r.partial,true);
+});
 const request=q=>new Request('http://localhost/api/chat',{method:'POST',body:JSON.stringify({messages:[{role:'user',content:q}]})});
 const modelReply=v=>Response.json({choices:[{message:{content:JSON.stringify(v)}}]});
 function configure(key){process.env.ENABLE_CHAT_PREVIEW='true';process.env.LLM_API_KEY='test-llm';process.env.LLM_BASE_URL='https://api.groq.com/openai/v1';process.env.IFIND_API_KEY=key;process.env.IFIND_TRANSPORT='fetch';delete process.env.FUYAO_API_KEY;}

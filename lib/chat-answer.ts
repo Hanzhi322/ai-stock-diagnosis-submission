@@ -42,6 +42,9 @@ export function inspectChatAnswer(value:unknown,market?:MarketResult,context:Cha
   for(const block of blocks){
     if(typeof block.text!=="string"||!block.text.trim())continue;
     const text=block.text.replace(/\\r\\n|\\n/g,"\n").trim();
+    if (/无可用回答正文|没有可用的回答正文|没有可用正文|(?:校验|修复|格式验证)(?:失败|通过)|请仅针对以下问题/.test(text)) {
+      issues.push("请直接回答用户的问题，不输出内部处理提示");removed=true;continue;
+    }
     if(removed&&/^(?:因此|所以|由此|综上|可见|这说明|这意味着|基于上述)/.test(text)){issues.push("前置依据暂未确认，相关推断需一起调整");continue;}
     const inaccurate=availabilityIssue(text,market,context)||amountScopeIssue(text,context);
     if(inaccurate){issues.push(inaccurate);removed=true;continue;}

@@ -7,6 +7,7 @@ import { getIfindResearch, mergeResearch } from "@/lib/ifind-research-server";
 import { isSimpleChat, researchTools, type ResearchTool } from "@/lib/ifind-research";
 import { evidenceFallback, inspectChatAnswer } from "@/lib/chat-answer";
 import { logUpstreamFailure, modelFailureMessage, readUpstreamError } from "@/lib/upstream-failure";
+import { modelOutputOptions, usesCompactModelPrompt } from "@/lib/model-options";
 
 const headers = { "Cache-Control": "no-store" };
 function error(message: string, code: string, status: number, retryAfterSeconds?: number) {
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
   const context: ChatContext = { ...(history ? {history} : {}), ...(valuation ? {valuation} : {}), ...(research.code!=="NOT_NEEDED"?{research}:{}) };
   const signal = AbortSignal.any([request.signal, AbortSignal.timeout(30000)]);
   const model = process.env.LLM_MODEL || "openai/gpt-oss-120b";
+  const compact = usesCompactModelPrompt(endpoint, model);
   // Same provider and credentials, with the same evidence validation. A fallback
   // is used only for provider failures, never to bypass unsupported content.
   const fallbackModel = new URL(endpoint).hostname === "api.groq.com" && model === "openai/gpt-oss-120b" ? "openai/gpt-oss-20b" : null;
@@ -50,10 +52,9 @@ export async function POST(request: Request) {
   // assistant narratives are not an authority for the current stock facts.
   const conversation=messages.slice(-3);
   const modelRequest = {
-    model, temperature: 0, max_tokens: model.startsWith("openai/gpt-oss-") ? 2000 : 1000,
-    ...(model.startsWith("openai/gpt-oss-") ? {reasoning_effort:"low"} : {}),
+    model, temperature: 0, ...modelOutputOptions(endpoint, model, 1000),
     response_format: { type: "json_object" },
-    messages: [{ role: "system", content: buildChatPrompt(market, context, researchQuestion) }, ...conversation],
+    messages: [{ role: "system", content: buildChatPrompt(market, context, researchQuestion, compact) }, ...conversation],
   };
   let payload = JSON.stringify(modelRequest);
   let repaired = false;
@@ -103,7 +104,7 @@ export async function POST(request: Request) {
         supplemented=true;
         const extra=await getIfindResearch(question, signal, {tool:lookup.tool as ResearchTool,query:lookup.query});
         context.research=mergeResearch(context.research,extra);
-        modelRequest.messages=[{role:"system",content:buildChatPrompt(market,context,researchQuestion)+"\n补查已经完成。请使用当前资料直接回答；无法确认的部分自然说明，不能再次申请lookup。"},...conversation];
+        modelRequest.messages=[{role:"system",content:buildChatPrompt(market,context,researchQuestion,compact)+"\n补查已经完成。请使用当前资料直接回答；无法确认的部分自然说明，不能再次申请lookup。"},...conversation];
         payload=JSON.stringify({...modelRequest,model:activeModel});
         continue;
       }
